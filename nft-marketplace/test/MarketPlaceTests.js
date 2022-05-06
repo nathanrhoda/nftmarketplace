@@ -47,6 +47,22 @@ contract('Market', (accounts) => {
 
                 console.log('items: ', items)
             })
+
+            if("Process sale of listed nft", async () => {
+                const items = await marketPlace.getAllNfts()
+                const price = items[0].price;
+
+                await marketPlace.processSale(nft.address, 1, {from: accounts[1], value: price})
+
+                // Get all unsold items
+                
+                // Current address buys nft
+                
+                // Get all unsold items
+
+                // All unsold items should be less than before
+                assert.isFalse(true, "Fix this test, redeploy and check ui integrations")
+            })
         })
       })
     })
