@@ -71,11 +71,11 @@ export default function Home() {
     const signer = provider.getSigner()
     const contract = new ethers.Contract(MarketAddress, MarketPlace.abi, signer)
 
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-
-    const transactin = await ConstructorFragment.processSale(NftAddress, nft.tokenId, {
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')    
+    
+    const transactin = await contract.processSale(NftAddress, nft.tokenId, {
       value: price
-    })
+    } )
     await transactin.wait()
     loadNFTs()
   }
@@ -102,7 +102,7 @@ export default function Home() {
 
                 <div className="p-4 bg-black">
                   <p className="text-2xl mb-4 font-bold text-white">{nft.price} ETH</p>
-                  <button className="-full bg-pink-500 text-white fond-bold py-2 px-12 rounded" onClick={() => buyNFT(nft)} />
+                  <button  className="-full bg-pink-500 text-white fond-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>BUY</button>
                 </div>
               </div>
             ))
