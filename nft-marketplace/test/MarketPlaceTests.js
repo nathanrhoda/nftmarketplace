@@ -1,13 +1,13 @@
 const MarketPlace = artifacts.require('MarketPlace.sol')
 const NFT = artifacts.require('NFT.sol')
 
+
 require('chai')
     .use(require('chai-as-promised'))
     .should()
 
 const { assert } = require('chai')
 var ethers = require('ethers')    
-const { interpolateAs } = require('next/dist/shared/lib/router/router')
 var web3 = require('web3')
 
 contract('Market', (accounts) => {
@@ -20,50 +20,55 @@ contract('Market', (accounts) => {
       })
 
       describe('deployment', async() => {
-        it('Market contract is deployed successfully', async() => {
-            const marketPlaceAddress = marketPlace.address
-            assert.notEqual(marketPlaceAddress, '')
-        })
+            it('Market contract is deployed successfully', async() => {
+                const marketPlaceAddress = marketPlace.address
+                assert.notEqual(marketPlaceAddress, '', "Market Place Contract has not been deployed")
+            })
 
-        it('NFT contract is deployed successfully', async() => {
-            const nftAddress = nft.address
-            assert.notEqual(nftAddress, '')
+            it('NFT contract is deployed successfully', async() => {
+                const nftAddress = nft.address
+                assert.notEqual(nftAddress, '', "NFT Contract has not been deployed")
+            })
         })
-
         describe('creating token', async() => {
             it('NFT contract creates a new token', async() => {
                 const uri = 'http://ipfs.imageaddress1'
                 await nft.createToken(uri)
                 const tokenURI = await nft.tokenURI(1)
-                assert.equal(tokenURI, uri)
+                assert.equal(tokenURI, uri, "Expected token uri has been set")
             })
 
             it('NFT marketplace contract creates a new token', async() => {
-                let listingPrice = await marketPlace.getListingPrice()
-                console.log('listing price: ', web3.utils.fromWei(listingPrice.toString(), 'ether'))
+                const beforeListingNftCount = (await marketPlace.getAllNfts()).length
+                let listingPrice = await marketPlace.getListingPrice()                
                 let auctionPrice = ethers.utils.parseUnits('10', 'ether')
-                await marketPlace.listNftOnMarketplace(nft.address, 1, auctionPrice, {value: listingPrice})
-                const items = await marketPlace.getAllNfts()
+                
+                await marketPlace.listNftOnMarketplace(nft.address, 1, auctionPrice, {value: listingPrice})                                
+                const afterListingNftCount = (await marketPlace.getAllNfts()).length
 
-                console.log('items: ', items)
+                assert.isTrue(beforeListingNftCount < afterListingNftCount, "New NFT has not been listed")
             })
 
-            if("Process sale of listed nft", async () => {
-                const items = await marketPlace.getAllNfts()
-                const price = items[0].price;
+            it("Process sale of listed nft", async () => {                
+                const nftsPreSale = await marketPlace.getAllNfts()
+                const beforeSaleCount = nftsPreSale.length
+                const nftToBeSold = nftsPreSale[0]
+                const price = nftsPreSale[0].price;
+                                
+                await marketPlace.processSale(nftToBeSold.nftContract, nftToBeSold.tokenId, {from: accounts[2], value: price})
 
-                await marketPlace.processSale(nft.address, 1, {from: accounts[1], value: price})
-
-                // Get all unsold items
-                
-                // Current address buys nft
-                
-                // Get all unsold items
-
-                // All unsold items should be less than before
-                assert.isFalse(true, "Fix this test, redeploy and check ui integrations")
+                const nftsPostSale = await marketPlace.getAllNfts()
+                const afterSaleCount = nftsPostSale.length                       
+                                
+                assert.isTrue(beforeSaleCount > afterSaleCount, "NFT should no longer be available for available on marketplace")                
             })
         })
-      })
+        
+        describe('Fetch tokens by wallet', async () => {
+            it("Get all NFTs for specific wallet", async () => {
+                const myNfts = await marketPlace.getMyNFTs( {from: accounts[2]} )                
+                assert.equal(1, myNfts.length, "This wallet should have one nft")
+            })
+        })
     })
 })
