@@ -40,7 +40,7 @@ export default function Home() {
       const marketContract = new web3.eth.Contract(abi, address)
 
       const data = await marketContract.methods.getAllNfts().call()
-
+      
       const items = await Promise.all( data.map(async i => {
         const tokenUri = await tokenContract.methods.tokenURI(i.tokenId).call()
         const meta = await axios.get(tokenUri)
@@ -56,7 +56,7 @@ export default function Home() {
         }
         return item
       }))
-
+      
       setNfts(items)
       setLoadingState('loaded')
     } else {
@@ -75,11 +75,11 @@ export default function Home() {
     
     const transactin = await contract.processSale(NftAddress, nft.tokenId, {
       value: price
-    } )
+    })
+
     await transactin.wait()
     loadNFTs()
   }
-
   if (loadingState === 'loaded' && !nfts.length)
     return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
 

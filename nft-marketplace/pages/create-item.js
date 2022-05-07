@@ -61,15 +61,13 @@ export default function CreateItem() {
         const connection = await web3modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = await provider.getSigner()
-
-        alert(MarketAddress)
         
         let contract = new ethers.Contract(NftAddress, NFT.abi, signer)
 
         let transaction = await contract.createToken(url)
 
         let tx = await transaction.wait()
-
+        
         let event = tx.events[0]
         let value = event.args[2]
         let tokenId = value.toNumber()
@@ -83,8 +81,9 @@ export default function CreateItem() {
         listingPrice = listingPrice.toString()
 
         transaction = await contract.listNftOnMarketplace(NftAddress, tokenId, price, { value: listingPrice })
-
+        
         await transaction.wait()
+        
         router.push('/')
 
     }
