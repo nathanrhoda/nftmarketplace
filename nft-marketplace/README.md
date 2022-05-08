@@ -40,4 +40,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - Integrate created nfts into open sea
 - Transact on Opensea
 
-- Maybe fix styling on react native app
+- Maybe fix styling on react app
