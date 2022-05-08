@@ -1,6 +1,5 @@
 import {  useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
 import axios from 'axios'
 
@@ -28,14 +27,12 @@ export default function MyAssets() {
         const signer = await provider.getSigner()
 
         const marketContract = new ethers.Contract(MarketAddress, NFTMarket.abi, signer)
-
         const tokenContract = new ethers.Contract(NftAddress, NFT.abi, provider)
 
         const data = await marketContract.getMyNFTs()
 
         const items = await Promise.all(data.map(async i => {
-            const tokenUri = await tokenContract.tokenURI(i.tokenId)
-            
+            const tokenUri = await tokenContract.tokenURI(i.tokenId)            
             const meta = await axios.get(tokenUri)
             let price = ethers.utils.formatEther(i.price.toString())
             

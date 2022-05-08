@@ -13,17 +13,6 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
-    maticmumbai:{
-      provider: () => new HDWalletProvider(mnemonic,'https://rpc-mumbai.maticvigil.com/v1/28e2225de00230f3b6337e07d1bae3ddfe7eef75'),
-      network_id: 80001,
-      confirmations:2,
-      timeoutBlocks: 200,
-      skipDryRun: true
-    },
-    maticmainnet: {
-      provider: () => new HDWalletProvider(mnemonic,'https://rpc-mainnet.maticvigil.com/v1/28e2225de00230f3b6337e07d1bae3ddfe7eef75'),
-      network_id: 137
-    },
     rinkeby:{
       host: "localhost",
       provider: function() {
