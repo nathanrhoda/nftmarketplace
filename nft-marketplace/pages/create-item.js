@@ -42,10 +42,23 @@ export default function CreateItem() {
             return
         }                    
         
-        const data = JSON.stringify({
-            name, description, image: fileUrl
-        })
+        const data = `{
+            "name": "HULK",
+            "description": "Testing like a bwaas",
+            "image": "${fileUrl}",
+            "attributes": [
+                {
+                    "trait_type": "Marvel Super Hero",
+                    "value": "Hulk"
+                },
+                {
+                    "trait_type": "Super Power",
+                    "value": "Pushing Buttons"
+                }        
+            ]
+        }`;
 
+        console.log(data)
         try {
             const added = await client.add(data)            
 
