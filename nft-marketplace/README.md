@@ -36,7 +36,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## TODO
 
-- Integrate created nfts into open sea
-- Transact on Opensea
+- Make Market place optional
+- Play around with updated Url
+- Play around with updating Metadata
+- Implement iteration
+- Create distinct metadata files 
+- Put NFT up for sale 
+- Purchase NFT on opensea
+
+- Clean up and refactor code to make it reuseable
+
 
 - Maybe fix styling on react app
