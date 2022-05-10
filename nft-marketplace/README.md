@@ -36,7 +36,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## TODO
 
-- Deploy contracts to Rinkeby
 - Integrate created nfts into open sea
 - Transact on Opensea
 

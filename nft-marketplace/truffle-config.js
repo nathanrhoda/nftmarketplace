@@ -5,6 +5,7 @@ const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
 var privateKey = process.env["ACCOUNT"];
 var url = process.env["URL"];
+var rink_project_id = process.env["PROJECTID"];
 
 module.exports = {
   networks: {
@@ -16,7 +17,7 @@ module.exports = {
     rinkeby:{
       host: "localhost",
       provider: function() {
-        return new HDWalletProvider(privateKey, url);
+        return new HDWalletProvider(privateKey, url + rink_project_id);
       },
       
       network_id:4,           
