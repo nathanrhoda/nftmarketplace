@@ -36,7 +36,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## TODO
 
+******Waiting for Rinkeby Faucet*******
 - Make Market place optional
+
 - Play around with updated Url
 - Play around with updating Metadata
 - Implement iteration

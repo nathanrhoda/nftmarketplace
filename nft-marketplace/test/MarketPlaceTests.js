@@ -35,7 +35,18 @@ contract('Market', (accounts) => {
                 const uri = 'http://ipfs.imageaddress1'
                 await nft.createToken(uri)
                 const tokenURI = await nft.tokenURI(1)
+                
                 assert.equal(tokenURI, uri, "Expected token uri has been set")
+            })
+
+            it('NFT change uri after creation', async() => {
+                const newUri = 'http://www.supercoloring.com/sites/default/files/styles/medium_no_levels/public/fif/2018/08/ironman-mask-template-paper-craft.png'                
+                const originalTokenURI = await nft.tokenURI(1)
+
+                await nft.setTokenUri(1, newUri);
+                const newTokenUri = await nft.tokenURI(1)
+
+                assert.equal(newUri, newTokenUri)
             })
 
             it('NFT marketplace contract creates a new token', async() => {
@@ -69,6 +80,6 @@ contract('Market', (accounts) => {
                 const myNfts = await marketPlace.getMyNFTs( {from: accounts[2]} )                
                 assert.equal(1, myNfts.length, "This wallet should have one nft")
             })
-        })
+        })        
     })
 })

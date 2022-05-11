@@ -1,8 +1,11 @@
 import { ethers } from 'ethers'
 import Web3 from 'web3'
 import {useEffect, useState } from 'react'
+import { create as IPFS } from 'ipfs-http-client'
 import axios from 'axios'
 import Web3Modal from 'web3modal'
+
+const client = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
 import {
   NftAddress,
@@ -64,6 +67,47 @@ export default function Home() {
     }
   }
 
+  async function updateName(nft) {
+    const fileUrl = "https://nft-test-url.s3.af-south-1.amazonaws.com/ironman.png"
+    
+    const data = `{
+        "name": "HULK",
+        "description": "Testing like a bwaas",
+        "image": "${fileUrl}",
+        "attributes": [
+            {
+                "trait_type": "Marvel Super Hero",
+                "value": "Hulk"
+            },
+            {
+                "trait_type": "Super Power",
+                "value": "Smash"
+            }        
+        ]
+    }`;
+
+    console.log(data)
+    try {        
+        const added = await client.add(data)                    
+
+        const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        console.log(url)
+        const web3modal = new Web3Modal()
+        const connection = await web3modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = await provider.getSigner()
+        
+        let contract = new ethers.Contract(NftAddress, NFT.abi, signer)
+
+        let transaction = await contract.setTokenUri(nft.tokenId, url)
+        await transaction.wait()
+        console.log(transaction)
+        loadNFTs()
+    } catch (error) {
+        console.log('Error uploading fileL ', error)
+    }
+}
+
   async function buyNft(nft) {
     const web3modal = new Web3Modal()
     const connection = await web3modal.connect()
@@ -73,11 +117,11 @@ export default function Home() {
 
     const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')    
     
-    const transactin = await contract.processSale(NftAddress, nft.tokenId, {
+    const transaction = await contract.processSale(NftAddress, nft.tokenId, {
       value: price
     })
 
-    await transactin.wait()
+    await transaction.wait()
     loadNFTs()
   }
   if (loadingState === 'loaded' && !nfts.length)
@@ -91,7 +135,7 @@ export default function Home() {
             nfts.map((nft, i) => (
 
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} />
+                <img src={nft.image} />                
 
                 <div className="p-4">
                   <p style={{height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>
@@ -103,7 +147,10 @@ export default function Home() {
                 <div className="p-4 bg-black">
                   <p className="text-2xl mb-4 font-bold text-white">{nft.price} ETH</p>
                   <button  className="-full bg-pink-500 text-white fond-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>BUY</button>
-                </div>
+                </div>                
+                <div className="p-4 bg-black">                  
+                  <button  className="-full bg-pink-500 text-white fond-bold py-2 px-12 rounded" onClick={() => updateName(nft)}>Update Name</button>
+                </div>                
               </div>
             ))
           }
