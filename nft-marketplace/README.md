@@ -37,16 +37,21 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## TODO
 
 ******Waiting for Rinkeby Faucet*******
-- Make Market place optional
 
-- Play around with updated Url
-- Play around with updating Metadata
-- Implement iteration
-- Create distinct metadata files 
+
 - Put NFT up for sale 
 - Purchase NFT on opensea
-
+- Implement interation
+- Create distinct metadata files 
 - Clean up and refactor code to make it reuseable
-
+- Implement cleaner structure 
+- Create template
 
 - Maybe fix styling on react app
+
+
+
+Findings
+- You can update metadata post minting
+- tokenUri refers to metadata and not image url
+- You can definitely mint a NFT on opensea
