@@ -92,17 +92,17 @@ export default function Home() {
     
     
     const data = `{
-        "name": "Ironman",
-        "description": "Man of Iron",
+        "name": "Thor",
+        "description": "God of Thunder",
         "image": "${fUrl}",
         "attributes": [
             {
                 "trait_type": "Marvel Super Hero",
-                "value": "Iron Man"
+                "value": "Thor"
             },
             {
                 "trait_type": "Super Power",
-                "value": "Genius"
+                "value": "Lightning Strike"
             }        
         ]
     }`;

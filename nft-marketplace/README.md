@@ -39,15 +39,17 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ******Waiting for Rinkeby Faucet*******
 
 
-- Create distinct metadata files 
 - Clean up and refactor code to make it reuseable
 - Implement cleaner structure 
+- Create distinct metadata files 
 - Create template
 - Maybe fix styling on react app
 
 
 
 Findings
-- You can update metadata post minting
+- You can update metadata post minting and post selling 
+- Important to limit this to only the owner of the nfy
 - tokenUri refers to metadata and not image url
 - You can definitely mint a NFT on opensea
+- Opensea uses lazy minting meaning that even if you create a nft it is only minted to the blockchain post selling
