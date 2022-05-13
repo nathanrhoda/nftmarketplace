@@ -39,14 +39,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ******Waiting for Rinkeby Faucet*******
 
 
-- Put NFT up for sale 
-- Purchase NFT on opensea
-- Implement interation
 - Create distinct metadata files 
 - Clean up and refactor code to make it reuseable
 - Implement cleaner structure 
 - Create template
-
 - Maybe fix styling on react app
 
 

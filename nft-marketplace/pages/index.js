@@ -16,12 +16,31 @@ import NFT from '../build/contracts/NFT.json'
 import MarketPlace from '../build/contracts/MarketPlace.json'
 
 export default function Home() {
+  const [ fileUrl, setFileUrl ] = useState(null)
   const [nfts, setNfts] = useState([])
+  const [ formInput, updateFormInput ] = useState({ tokenId: '', fileUrl: '' })
   const [loadingState, setLoadingState] = useState('not-loaded')
 
   useEffect(()=>{
     loadNFTs()
   }, [])
+
+  async function onChange(e) {
+    const file = e.target.files[0]
+
+    try {
+        const added = await client.add(
+            file, 
+            {
+                progress: (prog) => console.log(`received: ${prog}`)
+            }
+        )
+        const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        setFileUrl(url)            
+    } catch (error) {
+        console.log('Error uploading file: ', error)
+    }
+}
 
   async function loadNFTs(){
     const web3 = new Web3(window.ethereum);
@@ -68,20 +87,22 @@ export default function Home() {
   }
 
   async function updateName(nft) {
-    const fileUrl = "https://nft-test-url.s3.af-south-1.amazonaws.com/ironman.png"
+    const { tokenId } = formInput
+    const fUrl = fileUrl
+    
     
     const data = `{
-        "name": "HULK",
-        "description": "Testing like a bwaas",
-        "image": "${fileUrl}",
+        "name": "Ironman",
+        "description": "Man of Iron",
+        "image": "${fUrl}",
         "attributes": [
             {
                 "trait_type": "Marvel Super Hero",
-                "value": "Hulk"
+                "value": "Iron Man"
             },
             {
                 "trait_type": "Super Power",
-                "value": "Smash"
+                "value": "Genius"
             }        
         ]
     }`;
@@ -91,20 +112,31 @@ export default function Home() {
         const added = await client.add(data)                    
 
         const url = `https://ipfs.infura.io/ipfs/${added.path}`
-        console.log(url)
+        
+        const web3 = new Web3(window.ethereum);
         const web3modal = new Web3Modal()
         const connection = await web3modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = await provider.getSigner()
         
-        let contract = new ethers.Contract(NftAddress, NFT.abi, signer)
+        let writeContract = new ethers.Contract(NftAddress, NFT.abi, signer)
 
-        let transaction = await contract.setTokenUri(nft.tokenId, url)
+        const readContract = new web3.eth.Contract(NFT.abi, NftAddress)
+
+        let beforeTokenUri = await readContract.methods.tokenURI(tokenId).call()
+         
+
+        console.log("Before Update URI: ", beforeTokenUri)
+        let transaction = await writeContract.setTokenUri(tokenId, url)
         await transaction.wait()
         console.log(transaction)
+
+        let afterTokenUri = await readContract.methods.tokenURI(tokenId).call()
+
+        console.log("After Update URI: ", afterTokenUri)
         loadNFTs()
     } catch (error) {
-        console.log('Error uploading fileL ', error)
+        console.log('Error uploading file ', error)
     }
 }
 
@@ -124,8 +156,36 @@ export default function Home() {
     await transaction.wait()
     loadNFTs()
   }
-  if (loadingState === 'loaded' && !nfts.length)
-    return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
+  if (loadingState === 'loaded' && !nfts.length) 
+    return (
+      <div>
+        <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>    
+        <div className="flex justify-center">            
+          <div className="w-1/2 flex flex-col pb-12">              
+            <input
+              placeholder="New Token Id"
+              className="mt-8 border rounded p-4"
+              onChange={e => updateFormInput({ ...formInput, tokenId: e.target.value })}
+            />
+            { <input
+                    type="file"
+                    name="NFT"
+                    className="my-4"
+                    onChange={onChange}
+                /> 
+            }
+
+            {
+                  fileUrl && (
+                        <img className="rounded mt-4" width="350" src={fileUrl} />
+                    )
+                }            
+          </div>
+          <div className="p-4 bg-black">                  
+            <button  className="-full bg-pink-500 text-white fond-bold py-2 px-12 rounded" onClick={() => updateName()}>Update Name</button>
+          </div>           
+      </div>
+    </div>)
 
   return (
     <div className="flex justify-center">

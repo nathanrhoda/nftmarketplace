@@ -43,8 +43,8 @@ export default function CreateItem() {
         }                    
         
         const data = `{
-            "name": "HULK",
-            "description": "Testing like a bwaas",
+            "name": "${name}",
+            "description": "${description}",
             "image": "${fileUrl}",
             "attributes": [
                 {
@@ -63,6 +63,7 @@ export default function CreateItem() {
             const added = await client.add(data)            
 
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
+            console.log(url)
             createSale(url)
         } catch (error) {
             console.log('Error uploading fileL ', error)
@@ -93,7 +94,7 @@ export default function CreateItem() {
         
         listingPrice = listingPrice.toString()
 
-        transaction = await contract.listNftOnMarketplace(NftAddress, tokenId, price, { value: listingPrice })
+        //transaction = await contract.listNftOnMarketplace(NftAddress, tokenId, price, { value: listingPrice })
         
         await transaction.wait()
         

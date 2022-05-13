@@ -11,10 +11,15 @@ contract NFT is ERC721URIStorage, Ownable {
 	using Counters for Counters.Counter;
 	Counters.Counter private _tokenIds;
 
-	address contractAddress;
+	address private _owner;
 
-	constructor(address marketplaceAddress) ERC721("NFT MarketPlace", "NMP") {
-		contractAddress = marketplaceAddress;
+	constructor() ERC721("SUPERHEROS", "SPH") {
+		_owner = msg.sender;
+	}
+
+	modifier onlyCreator() {
+		require(_owner == msg.sender, "Only creator of NFT can modify metadata");
+		_;
 	}
 
 	function createToken(string memory tokenURI) public returns (uint) { 
@@ -23,11 +28,11 @@ contract NFT is ERC721URIStorage, Ownable {
 
 		_mint(msg.sender, newItemId);
 		_setTokenURI(newItemId, tokenURI);
-		setApprovalForAll(contractAddress, true);
+		//setApprovalForAll(contractAddress, true);
 		return newItemId;
 	}	
 
-	function setTokenUri(uint tokenId, string memory tokenURI) public onlyOwner {
+	function setTokenUri(uint tokenId, string memory tokenURI) public onlyCreator {
 		_setTokenURI(tokenId, tokenURI);
-	}
+	}	
 }
