@@ -11,18 +11,23 @@ contract NFT is ERC721URIStorage, Ownable {
 	using Counters for Counters.Counter;
 	Counters.Counter private _tokenIds;
 
-	address private _owner;
+	address private _owner;  	
 
 	constructor() ERC721("SUPERHEROS", "SPH") {
 		_owner = msg.sender;
+		_authorized[_creator] = true;
 	}
 
 	modifier onlyCreator() {
-		require(_owner == msg.sender, "Only creator of NFT can modify metadata");
+		require(_owner == msg.sender, "Only creator of NFT can perform this action");
 		_;
 	}
 
-	function createToken(string memory tokenURI) public returns (uint) { 
+	function createToken(string memory tokenURI) 
+		public
+		onlyCreator
+		returns (uint) 		
+	{ 
 		_tokenIds.increment();
 		uint256 newItemId=_tokenIds.current();
 
@@ -32,7 +37,10 @@ contract NFT is ERC721URIStorage, Ownable {
 		return newItemId;
 	}	
 
-	function setTokenUri(uint tokenId, string memory tokenURI) public onlyCreator {
+	function setTokenUri(uint tokenId, string memory tokenURI) 
+		public 
+		onlyCreator 
+	{
 		_setTokenURI(tokenId, tokenURI);
 	}	
 }
