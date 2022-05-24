@@ -11,11 +11,12 @@ contract NFT is ERC721URIStorage, Ownable {
 	using Counters for Counters.Counter;
 	Counters.Counter private _tokenIds;
 
+	address contractAddress;
 	address private _owner;  	
 
-	constructor() ERC721("SUPERHEROS", "SPH") {
-		_owner = msg.sender;
-		_authorized[_creator] = true;
+	constructor(address marketplaceAddress) ERC721("SUPERHEROS", "SPH") {
+		contractAddress = marketplaceAddress;
+		_owner = msg.sender;	
 	}
 
 	modifier onlyCreator() {
@@ -33,7 +34,7 @@ contract NFT is ERC721URIStorage, Ownable {
 
 		_mint(msg.sender, newItemId);
 		_setTokenURI(newItemId, tokenURI);
-		//setApprovalForAll(contractAddress, true);
+		setApprovalForAll(contractAddress, true);
 		return newItemId;
 	}	
 

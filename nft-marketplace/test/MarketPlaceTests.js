@@ -52,8 +52,7 @@ contract('Market', (accounts) => {
             it('NFT marketplace contract creates a new token', async() => {
                 const beforeListingNftCount = (await marketPlace.getAllNfts()).length
                 let listingPrice = await marketPlace.getListingPrice()                
-                let auctionPrice = ethers.utils.parseUnits('10', 'ether')
-                
+                let auctionPrice = ethers.utils.parseUnits('10', 'ether')                
                 await marketPlace.listNftOnMarketplace(nft.address, 1, auctionPrice, {value: listingPrice})                                
                 const afterListingNftCount = (await marketPlace.getAllNfts()).length
 
